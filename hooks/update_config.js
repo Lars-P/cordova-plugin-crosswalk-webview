@@ -185,8 +185,14 @@ module.exports = function(context) {
             if(!child) {
                 child = et.XML('<preference name="' + xwalk64bit + '" value="' + xwalk64bit + '" />');
                 XmlHelpers.graftXML(configXmlRoot, [child], '/*');
+                child = configXmlRoot.find('./preference[@name="buildarchitecture"]');
+                if(!child) {
+                    child = et.XML('<preference name="buildarchitecture" value="arm64" />');
+                    XmlHelpers.graftXML(configXmlRoot, [child], '/*');
+                }
                 fs.writeFileSync(projectConfigurationFile, configXmlRoot.write({indent: 4}), 'utf-8');
             }
+            
         }
     }
 
@@ -196,6 +202,10 @@ module.exports = function(context) {
             var child = configXmlRoot.find('./preference[@name="' + xwalk64bit + '"]');
             if (child) {
                 XmlHelpers.pruneXML(configXmlRoot, [child], '/*');
+                child = configXmlRoot.find('./preference[@name="buildarchitecture"]');
+                if(child) {
+                    XmlHelpers.pruneXML(configXmlRoot, [child], '/*');
+                }
                 fs.writeFileSync(projectConfigurationFile, configXmlRoot.write({indent: 4}), 'utf-8');
             }
         }
